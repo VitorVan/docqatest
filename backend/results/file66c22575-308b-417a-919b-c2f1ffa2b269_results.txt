@@ -1,1 +1,0 @@
-[{"query": "Qual o nome da pesquisa?", "result": " N/A", "source_documents": [
