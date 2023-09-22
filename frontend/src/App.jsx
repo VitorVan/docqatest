@@ -1,10 +1,12 @@
 import "./App.css";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
+import { message, Upload, Input, Button } from "antd";
+import axios from "axios";
 import { useState } from "react";
 
 function App() {
   const [response, setResponse] = useState({});
+  const [apiKey, setApiKey] = useState("");
 
   const { Dragger } = Upload;
 
@@ -14,15 +16,20 @@ function App() {
     action: "http://127.0.0.1:8000/upload",
     onChange(info) {
       const { status } = info.file;
-      setResponse(info.file.response);
-      console.log(info);
+      if (info.file.response?.detail) {
+        message.error(info.file.response.detail);
+        return;
+      } else {
+        setResponse(info.file.response);
+      }
       if (status !== "uploading") {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
+        message.success(`Arquivo analisado com sucesso.`);
       } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+        console.log(info);
+        message.error(`Falha na análise do arquivo.`);
       }
     },
     onDrop(e) {
@@ -30,8 +37,41 @@ function App() {
     },
   };
 
+  const handleChange = (e) => {
+    setApiKey(e.target.value);
+  };
+
+  const sendApiKey = () => {
+    // Make a POST request with the field value
+    if (apiKey === "") {
+      message.error(`Chave não deve ser vazia.`);
+      return;
+    }
+    axios
+      .post("http://127.0.0.1:8000/setapikey", {
+        apikey: apiKey,
+      })
+      .then(() => {
+        // Handle the response if needed
+        message.success(`Chave definida com sucesso.`);
+      })
+      .catch(() => {
+        // Handle errors
+        message.error(`Falha ao definir chave.`);
+      });
+  };
+
   return (
     <div className="flex flex-col items-center gap-12">
+      <div className="flex flex-row w-[442px] gap-3">
+        <Input.Password
+          placeholder="Insira sua chave de API OpenAI"
+          onChange={handleChange}
+        />
+        <Button className="w-[80px] focus:outline-none" onClick={sendApiKey}>
+          Enviar
+        </Button>
+      </div>
       <Dragger
         {...draggerProps}
         className="flex flex-col max-w-[442px] w-[442px]"

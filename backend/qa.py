@@ -6,10 +6,9 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 
-def qaBase(file, query, chain_type, k):
-    openaikey = ''
-
-    os.environ["OPENAI_API_KEY"] = openaikey  
+def qaBase(apikey, file, query, chain_type, k):
+    os.environ["OPENAI_API_KEY"] = apikey  
+    print(os.environ["OPENAI_API_KEY"])
     # load document
     loader = PyPDFLoader(file)
     documents = loader.load()

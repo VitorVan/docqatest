@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 import uuid
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -22,8 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+apikey = ""
+
 @app.post("/upload")
 def uploadFile(file: UploadFile = File(...)):
+
+    if (apikey == ""):
+        raise HTTPException(status_code=401, detail="Chave de API não definida")
+
+
 
     generatedUuid = str(uuid.uuid4())
 
@@ -37,27 +44,35 @@ def uploadFile(file: UploadFile = File(...)):
         
     prompts = [
         "Qual o título da pesquisa em português?",
-        "A qual grande área a pesquisa se aplica em português?",
+        #"A qual grande área a pesquisa se aplica em português?",
         # "Se pudesse definir sua pesquisa em quatro palavras-chave, quais seriam elas?",
         # "É uma revisão sistemática ou revisão literária?",
         # "Se não é uma revisão, que tipo de pesquisa foi realizada?",
-        "Qual o principal objetivo da pesquisa em português?",
-        "Que problema ela resolve ou qual lacuna do conhecimento ela preenche ou soluciona em português?",
+        #"Qual o principal objetivo da pesquisa em português?",
+        #"Que problema ela resolve ou qual lacuna do conhecimento ela preenche ou soluciona em português?",
     ]
 
     results = []
 
     for prompt in prompts:
-        result = qaBase(file_path, prompt, select_chain_type, select_k)
+        try: 
+            result = qaBase(apikey, file_path, prompt, select_chain_type, select_k)
+        except:
+            raise HTTPException(status_code=401, detail="Chave de API incorreta.")
+            
         results.append(result)
 
 
     return {"success": True, "file": file.filename, "path": file_path, "result": results}
 
-@app.get("/")
-async def root():
-    print("Hello World")
-    return {"success": True}
+@app.post("/setapikey")
+async def setapikey(request: Request):
+    global apikey
+    data = await request.json()  # Parse the JSON body
+    apikey = data.get("apikey", "")
+    print(apikey)
+    return {"success": True, "apikey": apikey}
+    
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1",port=8000)
