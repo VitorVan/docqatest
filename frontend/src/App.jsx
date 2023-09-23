@@ -7,6 +7,7 @@ import { useState } from "react";
 function App() {
   const [response, setResponse] = useState({});
   const [apiKey, setApiKey] = useState("");
+  const [error, setError] = useState(false);
 
   const { Dragger } = Upload;
 
@@ -45,8 +46,11 @@ function App() {
     // Make a POST request with the field value
     if (apiKey === "") {
       message.error(`Chave não deve ser vazia.`);
+      setError(true);
       return;
     }
+
+    setError(false);
     axios
       .post("http://127.0.0.1:8000/setapikey", {
         apikey: apiKey,
@@ -58,6 +62,7 @@ function App() {
       .catch(() => {
         // Handle errors
         message.error(`Falha ao definir chave.`);
+        setError(true);
       });
   };
 
@@ -67,6 +72,7 @@ function App() {
         <Input.Password
           placeholder="Insira sua chave de API OpenAI"
           onChange={handleChange}
+          status={error ? "error" : "validating"}
         />
         <Button className="w-[80px] focus:outline-none" onClick={sendApiKey}>
           Enviar
