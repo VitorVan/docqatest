@@ -5,6 +5,8 @@ import uuid
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import openai
+
 
 from qa import qaBase
 
@@ -57,6 +59,8 @@ def uploadFile(file: UploadFile = File(...)):
     for prompt in prompts:
         try: 
             result = qaBase(apikey, file_path, prompt, select_chain_type, select_k)
+        except openai.error.RateLimitError as e:
+            raise HTTPException(status_code=401, detail="Limite de requisições na OpenAI excedido.")
         except:
             raise HTTPException(status_code=401, detail="Chave de API incorreta.")
             
