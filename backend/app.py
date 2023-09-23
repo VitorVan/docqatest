@@ -29,14 +29,17 @@ apikey = ""
 @app.post("/upload")
 def uploadFile(file: UploadFile = File(...)):
 
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=401, detail="Arquivo deve ser um PDF")
+
     if (apikey == ""):
         raise HTTPException(status_code=401, detail="Chave de API não definida")
 
-
-
     generatedUuid = str(uuid.uuid4())
 
+
     file_path = f"uploads/{os.path.splitext(file.filename)[0] + generatedUuid + os.path.splitext(file.filename)[1]}"
+    
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
@@ -60,9 +63,9 @@ def uploadFile(file: UploadFile = File(...)):
         try: 
             result = qaBase(apikey, file_path, prompt, select_chain_type, select_k)
         except openai.error.RateLimitError as e:
-            raise HTTPException(status_code=401, detail="Limite de requisições na OpenAI excedido.")
+            raise HTTPException(status_code=401, detail="Limite de requisições na OpenAI excedido")
         except:
-            raise HTTPException(status_code=401, detail="Chave de API incorreta.")
+            raise HTTPException(status_code=401, detail="Chave de API incorreta")
             
         results.append(result)
 
