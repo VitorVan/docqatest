@@ -13,7 +13,7 @@ function App() {
 
   const draggerProps = {
     name: "file",
-    multiple: true,
+    multiple: false,
     action: "http://127.0.0.1:8000/upload",
     onChange(info) {
       const { status } = info.file;
@@ -27,14 +27,11 @@ function App() {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        message.success(`Arquivo analisado com sucesso.`);
+        message.success(`Arquivo analisado com sucesso`);
       } else if (status === "error") {
         console.log(info);
-        message.error(`Falha na análise do arquivo.`);
+        message.error(`Falha na análise do arquivo`);
       }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e);
     },
   };
 
@@ -74,8 +71,8 @@ function App() {
           onChange={handleChange}
           status={error ? "error" : "validating"}
         />
-        <Button className="w-[80px] focus:outline-none" onClick={sendApiKey}>
-          Enviar
+        <Button className="w-[120px] focus:outline-none" onClick={sendApiKey}>
+          Definir chave
         </Button>
       </div>
       <Dragger
