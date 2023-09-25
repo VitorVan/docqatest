@@ -1,5 +1,7 @@
 # Teste para Resposta de Questões sobre documentos
 
+Instale as dependências do frontend (npm i) e do backend (requirements.txt)
+
 Para rodar o frontend, acesse a pasta frontend e rode
 
 ```
