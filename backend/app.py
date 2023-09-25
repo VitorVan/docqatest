@@ -49,12 +49,12 @@ def uploadFile(file: UploadFile = File(...)):
         
     prompts = [
         "Qual o título da pesquisa em português?",
-        #"A qual grande área a pesquisa se aplica em português?",
-        # "Se pudesse definir sua pesquisa em quatro palavras-chave, quais seriam elas?",
-        # "É uma revisão sistemática ou revisão literária?",
-        # "Se não é uma revisão, que tipo de pesquisa foi realizada?",
-        #"Qual o principal objetivo da pesquisa em português?",
-        #"Que problema ela resolve ou qual lacuna do conhecimento ela preenche ou soluciona em português?",
+        "A qual grande área a pesquisa se aplica em português?",
+        "Se pudesse definir sua pesquisa em quatro palavras-chave, quais seriam elas em português?",
+        "É uma revisão sistemática ou revisão literária em português?",
+        "Se não é uma revisão, que tipo de pesquisa foi realizada em português?",
+        "Qual o principal objetivo da pesquisa em português em português?",
+        "Que problema ela resolve ou qual lacuna do conhecimento ela preenche ou soluciona em português?",
     ]
 
     results = []
