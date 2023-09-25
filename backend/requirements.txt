@@ -5,3 +5,7 @@ pypdf
 tiktoken
 panel
 notebook
+uuid
+shutil
+uvicorn
+fastapi
